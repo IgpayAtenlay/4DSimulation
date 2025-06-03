@@ -6,16 +6,16 @@ public class Eye {
     private Dimention location;
     private Dimention direction;
     private Dimention displayRelativePosition;
-    private double solid;
-    private double blur;
-    private int startingBlur;
+    private double solidRange;
+    private double blurRange;
+    private double gradientRange;
     public Eye() {
         location = new Dimention(0, 0, 0, 0);
         direction = new Dimention(0, 0, 0, 0);
-        displayRelativePosition = new Dimention(0, 0, 200, 0);
-        solid = 5;
-        blur = 100;
-        startingBlur = 200;
+        displayRelativePosition = new Dimention(0, 0, 10, 0);
+        solidRange = 10;
+        blurRange = 100;
+        gradientRange = 5;
     }
 
     public Dimention modifyCoordinates(Dimention dimention) {
@@ -28,22 +28,22 @@ public class Eye {
         // rotate
         Dimention rotated = new Dimention(
                 Math.cos(direction.y()) * (
-                        Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
-                ) - Math.sin(direction.y()) * z,
+                                        Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
+                                ) - Math.sin(direction.y()) * z,
                 Math.sin(direction.x()) * (
-                    Math.cos(direction.y()) * z + Math.sin(direction.y()) * (
-                        Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
-                    )
-                ) + Math.cos(direction.x()) * (
-                    Math.cos(direction.z()) * y - Math.sin(direction.z()) * x
-                ),
+                                    Math.cos(direction.y()) * z + Math.sin(direction.y()) * (
+                                        Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
+                                    )
+                                ) + Math.cos(direction.x()) * (
+                                    Math.cos(direction.z()) * y - Math.sin(direction.z()) * x
+                                ),
                 Math.cos(direction.x()) * (
-                        Math.cos(direction.y()) * z + Math.sin(direction.y()) * (
-                                Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
-                        )
-                ) - Math.sin(direction.x()) * (
-                        Math.cos(direction.z()) * y - Math.sin(direction.z()) * x
-                ),
+                                        Math.cos(direction.y()) * z + Math.sin(direction.y()) * (
+                                                Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
+                                        )
+                                ) - Math.sin(direction.x()) * (
+                                        Math.cos(direction.z()) * y - Math.sin(direction.z()) * x
+                                ),
                 w
         );
 
@@ -54,13 +54,13 @@ public class Eye {
                 w
         );
     }
-    public double getSolid() {
-        return solid;
+    public double getSolidRange() {
+        return solidRange;
     }
-    public double getBlur() {
-        return blur;
+    public double getBlurRange() {
+        return blurRange;
     }
-    public int getStartingBlur() {
-        return startingBlur;
+    public double getGradientRange() {
+        return gradientRange;
     }
 }

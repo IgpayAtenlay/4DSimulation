@@ -6,12 +6,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Frame extends JFrame {
-    public Panel panel;
+    public ZBuffer panel;
     public Frame() {
         super("Four Dimentions");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 600);
-        panel = new Panel();
+        panel = new ZBuffer(getWidth(), getHeight());
         add(panel);
         setFocusable(true);
         addKeyListener(new KeyAdapter() {

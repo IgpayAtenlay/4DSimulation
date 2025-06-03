@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Panel extends JPanel {
     public static int CROSSHAIR_LENGTH = 12;
-    public static int SPEED = 5;
+    public static int SPEED = 50;
     private final ArrayList<Shape> shapes;
     private final Eye eye;
     public Panel() {
@@ -49,10 +49,10 @@ public class Panel extends JPanel {
             shapes.get(0).move(SPEED / 2, new Dimention(0, 0, -1, 0));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_J) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED / 4, new Dimention(0, 0, 0, -1));
+            shapes.get(0).move(SPEED / 2, new Dimention(0, 0, 0, -1));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_L) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED / 4, new Dimention(0, 0, 0, 1));
+            shapes.get(0).move(SPEED / 2, new Dimention(0, 0, 0, 1));
         }
 
         repaint();

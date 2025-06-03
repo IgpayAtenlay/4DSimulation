@@ -7,8 +7,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public abstract class CompositeShape extends Shape {
-    public static final int MAX_TRIANGLE_SIZE = 2;
-    protected final ArrayList<Triangle> mesh;
+    public final ArrayList<Triangle> mesh;
     public CompositeShape() {
         this.mesh = new ArrayList<>();
     }

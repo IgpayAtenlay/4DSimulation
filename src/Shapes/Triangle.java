@@ -7,9 +7,9 @@ import Visuals.Panel;
 import java.awt.*;
 
 public class Triangle extends Shape {
-    private Dimention cornerOne;
-    private Dimention cornerTwo;
-    private Dimention cornerThree;
+    public Dimention cornerOne;
+    public Dimention cornerTwo;
+    public Dimention cornerThree;
 
     public Triangle(Dimention cornerOne, Dimention cornerTwo, Dimention cornerThree) {
         this.cornerOne = cornerOne;
@@ -32,26 +32,38 @@ public class Triangle extends Shape {
         g.setColor(oldColor);
     }
     public Color getColor(Eye eye, Dimention... dimentions) {
+        double smallestW = Double.MAX_VALUE;
         boolean pos = false;
-        int blurValue = 0;
 
         for (Dimention dimention : dimentions) {
-            double w = Math.abs(dimention.w());
-            if (w <= eye.getSolid() / 2) {
-                return Color.BLACK;
-            } else if (w <= eye.getBlur() / 2) {
+            if (Math.abs(dimention.w()) < smallestW) {
+                smallestW = Math.abs(dimention.w());
                 if (dimention.w() > 0) {
                     pos = true;
                 }
-                double blurArea = eye.getBlur() - eye.getSolid();
-                blurValue = (int) ((1 - (w - eye.getSolid() / 2) / (eye.getBlur() / 2 - eye.getSolid() / 2)) * eye.getStartingBlur());
             }
         }
 
-        if (pos) {
-            return new Color(255, 0, 0, blurValue);
+        int blurValue = 0;
+        if (smallestW <= eye.getBlurRange() / 2) {
+            blurValue = (int) ((1 - smallestW / (eye.getBlurRange() / 2)) * 255);
+        }
+
+        if (smallestW <= eye.getSolidRange() / 2) {
+            return new Color(0, 0, 0, blurValue);
+        } else if (smallestW <= eye.getSolidRange() / 2 + eye.getGradientRange()) {
+            int value = (int) ((smallestW - eye.getSolidRange() / 2) / eye.getGradientRange() * 255);
+            if (pos) {
+                return new Color(value, 0, 0, blurValue);
+            } else {
+                return new Color(0, 0, value, blurValue);
+            }
         } else {
-            return new Color(0, 0, 255, blurValue);
+            if (pos) {
+                return new Color(255, 0, 0, blurValue);
+            } else {
+                return new Color(0, 0, 255, blurValue);
+            }
         }
     }
 

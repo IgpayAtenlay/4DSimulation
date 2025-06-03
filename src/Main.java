@@ -18,8 +18,8 @@ public class Main {
 //        frame.panel.add(genericGraph);
         frame.panel.add(new CompositeRectangle(
                 new Dimention(0, 0, 100, 0),
-                new Dimention(100, 0, 100, 0),
-                new Dimention(100, 100, 100, 100))
+                new Dimention(500, 0, 100, 0),
+                new Dimention(500, 500, 100, 100))
         );
     }
 }
