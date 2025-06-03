@@ -120,34 +120,39 @@ public class ZBuffer extends JPanel {
         double absW = Math.abs(dimention.w());
         double absZ = Math.abs(dimention.z());
         boolean pos = dimention.w() >= 0;
+        double distance = Math.sqrt(absZ * absZ + absW * absW);
 
-        int blurValue = 0;
-        if (absW <= Settings.getBlurRange() / 2) {
-            blurValue = (int) ((1 - absW / (Settings.getBlurRange() / 2)) * 255);
+        int totalBlur = 0;
+        if (distance <= Settings.getBlurRange() / 2) {
+            totalBlur = (int) ((1 - distance / (Settings.getBlurRange() / 2)) * 255);
         }
         int zBlur = 0;
         if (absZ <= Settings.getBlurRange() / 2) {
             zBlur = (int) ((1 - absZ / (Settings.getBlurRange() / 2)) * 255);
         }
+        int wBlur = 0;
+        if (zBlur != 0) {
+            wBlur = totalBlur * 255 / zBlur;
+        }
 
         Color baseColor;
         if (absW <= Settings.getSolidRange() / 2) {
-            baseColor = new Color(0, 0, 0, blurValue);
+            baseColor = new Color(0, 0, 0);
         } else if (absW <= Settings.getSolidRange() / 2 + Settings.getGradientRange()) {
             int value = (int) ((absW - Settings.getSolidRange() / 2) / Settings.getGradientRange() * 255);
             if (pos) {
-                baseColor = new Color(value, 0, 0, blurValue);
+                baseColor = new Color(value, 0, 0);
             } else {
-                baseColor = new Color(0, 0, value, blurValue);
+                baseColor = new Color(0, 0, value);
             }
         } else {
             if (pos) {
-                baseColor = new Color(255, 0, 0, blurValue);
+                baseColor = new Color(255, 0, 0);
             } else {
-                baseColor = new Color(0, 0, 255, blurValue);
+                baseColor = new Color(0, 0, 255);
             }
         }
 
-        return ColorValues.blendColors(Settings.getBackground(), baseColor, zBlur);
+        return ColorValues.blendColors(Settings.getBackground(), baseColor, zBlur, wBlur);
     }
 }

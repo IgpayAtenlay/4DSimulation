@@ -3,12 +3,12 @@ package Controls;
 import java.awt.*;
 
 public class Settings {
-    private static double solidRange = 10;
+    private static double solidRange = 500;
     private static double blurRange = 6000;
-    private static double gradientRange = 5;
+    private static double gradientRange = 200;
     private static int horizontalSpeed = 50;
     private static int forwardsSpeed = 50;
-    private static int anaSpeed = 5;
+    private static int anaSpeed = 50;
     private static Color background = Color.WHITE;
 
     public static double getSolidRange() {
