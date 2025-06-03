@@ -1,4 +1,4 @@
-package Shapes;
+package Entities;
 
 import Data.Dimention;
 

@@ -1,6 +1,6 @@
-package Visuals;
+package Controls;
 
-public class ControlValues {
+public class Settings {
     private static double solidRange = 10;
     private static double blurRange = 100;
     private static double gradientRange = 5;

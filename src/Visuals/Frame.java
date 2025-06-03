@@ -1,5 +1,7 @@
 package Visuals;
 
+import Controls.Keys;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -22,10 +24,6 @@ public class Frame extends JFrame {
                 Keys.keyReleased(e);
             }
         });
-        Timer timer = new Timer(1, e -> {
-            panel.tick();
-        });
-        timer.start();
         setUndecorated(true);
         GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice()

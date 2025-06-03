@@ -1,12 +1,12 @@
-package Shapes;
+package Entities;
 
 import Data.Dimention;
 
 import java.util.ArrayList;
 
-public abstract class CompositeShape {
+public abstract class Mesh extends Entity {
     public final ArrayList<Triangle> mesh;
-    public CompositeShape() {
+    public Mesh() {
         this.mesh = new ArrayList<>();
     }
 

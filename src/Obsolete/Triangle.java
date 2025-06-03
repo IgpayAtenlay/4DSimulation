@@ -1,7 +1,7 @@
 package Obsolete;
 
 import Data.Dimention;
-import Visuals.ControlValues;
+import Controls.Settings;
 
 import java.awt.*;
 
@@ -44,14 +44,14 @@ public class Triangle extends Shape {
         }
 
         int blurValue = 0;
-        if (smallestW <= ControlValues.getBlurRange() / 2) {
-            blurValue = (int) ((1 - smallestW / (ControlValues.getBlurRange() / 2)) * 255);
+        if (smallestW <= Settings.getBlurRange() / 2) {
+            blurValue = (int) ((1 - smallestW / (Settings.getBlurRange() / 2)) * 255);
         }
 
-        if (smallestW <= ControlValues.getSolidRange() / 2) {
+        if (smallestW <= Settings.getSolidRange() / 2) {
             return new Color(0, 0, 0, blurValue);
-        } else if (smallestW <= ControlValues.getSolidRange() / 2 + ControlValues.getGradientRange()) {
-            int value = (int) ((smallestW - ControlValues.getSolidRange() / 2) / ControlValues.getGradientRange() * 255);
+        } else if (smallestW <= Settings.getSolidRange() / 2 + Settings.getGradientRange()) {
+            int value = (int) ((smallestW - Settings.getSolidRange() / 2) / Settings.getGradientRange() * 255);
             if (pos) {
                 return new Color(value, 0, 0, blurValue);
             } else {

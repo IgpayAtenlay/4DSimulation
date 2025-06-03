@@ -1,8 +1,8 @@
 package Obsolete;
 
 import Data.Dimention;
-import Visuals.Eye;
-import Visuals.Keys;
+import Entities.Eye;
+import Controls.Keys;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,8 +1,8 @@
-package Visuals;
+package Entities;
 
 import Data.Dimention;
 
-public class Eye {
+public class Eye extends Entity {
     private Dimention location;
     private Dimention direction;
     private Dimention displayRelativePosition;
@@ -11,7 +11,6 @@ public class Eye {
         direction = new Dimention(0, 0, 0, 0);
         displayRelativePosition = new Dimention(0, 0, 10, 0);
     }
-
     public Dimention modifyCoordinates(Dimention dimention) {
         // move camera to 0,0,0,0
         double x = dimention.x() - location.x();
@@ -47,5 +46,8 @@ public class Eye {
                 z,
                 w
         );
+    }
+    public void move(int distance, Dimention direction) {
+        location = location.move(distance, direction);
     }
 }

@@ -1,29 +1,25 @@
 package Visuals;
 
+import Controls.Control;
+import Controls.Settings;
 import Data.Dimention;
-import Shapes.CompositeShape;
-import Shapes.Triangle;
+import Entities.Mesh;
+import Entities.Triangle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class ZBuffer extends JPanel {
     private static int CROSSHAIR_LENGTH = 12;
-    private final ArrayList<CompositeShape> shapes;
-    private final Eye eye;
-    private BufferedImage image;
     private LinkedListColor[][] zBuffer;
+    private BufferedImage image;
     private static final Color background = Color.WHITE;
 
     public ZBuffer() {
         super();
         clearZBuffer();
         clearImage();
-        shapes = new ArrayList<>();
-        this.eye = new Eye();
     }
 
     private void clearZBuffer() {
@@ -86,7 +82,7 @@ public class ZBuffer extends JPanel {
 
         // create image
         clearZBuffer();
-        for (CompositeShape shape : shapes) {
+        for (Mesh shape : Control.getScene().getShapes()) {
             for (Triangle triangle : shape.mesh) {
                 rasterizeTriangle(triangle);
             }
@@ -113,40 +109,12 @@ public class ZBuffer extends JPanel {
         g.drawLine(getWidth() / 2 - CROSSHAIR_LENGTH / 2, getHeight() / 2, getWidth() / 2 + CROSSHAIR_LENGTH / 2, getHeight() / 2);
         g.drawLine(getWidth() / 2, getHeight() / 2 - CROSSHAIR_LENGTH / 2, getWidth() / 2, getHeight() / 2 + CROSSHAIR_LENGTH / 2);
     }
-
-    public void add(CompositeShape shape) {
-        shapes.add(shape);
-    }
     public void tick() {
-        if (Keys.isKeyPressed(KeyEvent.VK_W) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(0, 1, 0, 0));
-        }
-        if (Keys.isKeyPressed(KeyEvent.VK_S) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(0, -1, 0, 0));
-        }
-        if (Keys.isKeyPressed(KeyEvent.VK_A) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(-1, 0, 0, 0));
-        }
-        if (Keys.isKeyPressed(KeyEvent.VK_D) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(1, 0, 0, 0));
-        }
-        if (Keys.isKeyPressed(KeyEvent.VK_I) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getForwardsSpeed(), new Dimention(0, 0, 1, 0));
-        }
-        if (Keys.isKeyPressed(KeyEvent.VK_K) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getForwardsSpeed(), new Dimention(0, 0, -1, 0));
-        }
-        if (Keys.isKeyPressed(KeyEvent.VK_J) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getAnaSpeed(), new Dimention(0, 0, 0, -1));
-        }
-        if (Keys.isKeyPressed(KeyEvent.VK_L) && shapes.size() > 0) {
-            shapes.get(0).move(ControlValues.getAnaSpeed(), new Dimention(0, 0, 0, 1));
-        }
-
         repaint();
     }
+
     public Dimention modifyCoordinates(Dimention dimention) {
-        Dimention result = eye.modifyCoordinates(dimention);
+        Dimention result = Control.getScene().getEye().modifyCoordinates(dimention);
         return new Dimention(result.x() + (double) getWidth() / 2, result.y() * -1 + (double) getHeight() / 2, result.z(), result.w());
     }
     public Color getColor(double w) {
@@ -154,14 +122,14 @@ public class ZBuffer extends JPanel {
         boolean pos = w >= 0;
 
         int blurValue = 0;
-        if (absW <= ControlValues.getBlurRange() / 2) {
-            blurValue = (int) ((1 - absW / (ControlValues.getBlurRange() / 2)) * 255);
+        if (absW <= Settings.getBlurRange() / 2) {
+            blurValue = (int) ((1 - absW / (Settings.getBlurRange() / 2)) * 255);
         }
 
-        if (absW <= ControlValues.getSolidRange() / 2) {
+        if (absW <= Settings.getSolidRange() / 2) {
             return new Color(0, 0, 0, blurValue);
-        } else if (absW <= ControlValues.getSolidRange() / 2 + ControlValues.getGradientRange()) {
-            int value = (int) ((absW - ControlValues.getSolidRange() / 2) / ControlValues.getGradientRange() * 255);
+        } else if (absW <= Settings.getSolidRange() / 2 + Settings.getGradientRange()) {
+            int value = (int) ((absW - Settings.getSolidRange() / 2) / Settings.getGradientRange() * 255);
             if (pos) {
                 return new Color(value, 0, 0, blurValue);
             } else {
