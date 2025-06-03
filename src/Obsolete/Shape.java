@@ -1,7 +1,6 @@
-package Shapes;
+package Obsolete;
 
 import Data.Dimention;
-import Visuals.Panel;
 
 import java.awt.*;
 

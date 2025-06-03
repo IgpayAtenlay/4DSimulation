@@ -11,19 +11,15 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class ZBuffer extends JPanel {
-    public static int CROSSHAIR_LENGTH = 12;
-    public static int SPEED = 50;
+    private static int CROSSHAIR_LENGTH = 12;
     private final ArrayList<CompositeShape> shapes;
     private final Eye eye;
-    private int WIDTH;
-    private int HEIGHT;
     private BufferedImage image;
     private LinkedListColor[][] zBuffer;
     private static final Color background = Color.WHITE;
 
-    public ZBuffer(int width, int height) {
-        this.WIDTH = width;
-        this.HEIGHT = height;
+    public ZBuffer() {
+        super();
         clearZBuffer();
         clearImage();
         shapes = new ArrayList<>();
@@ -31,39 +27,42 @@ public class ZBuffer extends JPanel {
     }
 
     private void clearZBuffer() {
-        zBuffer = new LinkedListColor[WIDTH][HEIGHT];
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
+        zBuffer = new LinkedListColor[Math.max(1, getWidth())][Math.max(1, getHeight())];
+        for (int x = 0; x < zBuffer.length; x++) {
+            for (int y = 0; y < zBuffer[x].length; y++) {
                 zBuffer[x][y] = new LinkedListColor();
             }
         }
     }
     private void clearImage() {
-        this.image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        this.image = new BufferedImage(zBuffer.length, zBuffer[0].length, BufferedImage.TYPE_INT_RGB);
     }
 
-    private void rasterizeTriangle(Dimention cornerOne,
-                                   Dimention cornerTwo,
-                                   Dimention cornerThree,
-                                   Color color) {
+    private void rasterizeTriangle(Triangle triangle) {
+        Dimention cornerOne = modifyCoordinates(triangle.cornerOne);
+        Dimention cornerTwo = modifyCoordinates(triangle.cornerTwo);
+        Dimention cornerThree = modifyCoordinates(triangle.cornerThree);
 
         // Bounding box
         int minX = (int) Math.max(0, Math.min(cornerOne.x(), Math.min(cornerTwo.x(), cornerThree.x())));
-        int maxX = (int) Math.min(WIDTH - 1, Math.max(cornerOne.x(), Math.max(cornerTwo.x(), cornerThree.x())));
+        int maxX = (int) Math.min(zBuffer.length - 1, Math.max(cornerOne.x(), Math.max(cornerTwo.x(), cornerThree.x())));
         int minY = (int) Math.max(0, Math.min(cornerOne.y(), Math.min(cornerTwo.y(), cornerThree.y())));
-        int maxY = (int) Math.min(HEIGHT - 1, Math.max(cornerOne.y(), Math.max(cornerTwo.y(), cornerThree.y())));
+        int maxY = (int) Math.min(zBuffer[0].length - 1, Math.max(cornerOne.y(), Math.max(cornerTwo.y(), cornerThree.y())));
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 double[] bary = baryCoords(x, y, cornerOne, cornerTwo, cornerThree);
                 double u = bary[0];
                 double v = bary[1];
-                double w = bary[2];
+                double baryW = bary[2];
 
                 // inside triangle
-                if (u >= 0 && v >= 0 && w >= 0) {
-                    double z = u * cornerOne.z() + v * cornerTwo.z() + w * cornerThree.z();
-                    zBuffer[x][y].add(z, color);
+                if (u >= 0 && v >= 0 && baryW >= 0) {
+                    double z = u * cornerOne.z() + v * cornerTwo.z() + baryW * cornerThree.z();
+                    if (z > 0) {
+                        double w = u * cornerOne.w() + v * cornerTwo.w() + baryW * cornerThree.w();
+                        zBuffer[x][y].add(z, getColor(w));
+                    }
                 }
             }
         }
@@ -89,25 +88,19 @@ public class ZBuffer extends JPanel {
         clearZBuffer();
         for (CompositeShape shape : shapes) {
             for (Triangle triangle : shape.mesh) {
-                rasterizeTriangle(modifyCoordinates(triangle.cornerOne), modifyCoordinates(triangle.cornerTwo), modifyCoordinates(triangle.cornerThree), Color.BLACK);
+                rasterizeTriangle(triangle);
             }
         }
 
         // paint image
         clearImage();
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                Color blendedColor = Color.WHITE;
+        for (int x = 0; x < zBuffer.length; x++) {
+            for (int y = 0; y < zBuffer[x].length; y++) {
+                Color blendedColor = background;
                 for (Color color : zBuffer[x][y]) {
-                    System.out.println("color");
-                    System.out.println(blendedColor);
-                    System.out.println(color);
                     int red = (int) (blendedColor.getRed() * ((double)(255 - color.getAlpha()) / 255) + color.getRed() * ((double)(color.getAlpha()) / 255));
                     int green = (int) (blendedColor.getGreen() * ((double)(255 - color.getAlpha()) / 255) + color.getGreen() * ((double)(color.getAlpha()) / 255));
                     int blue = (int) (blendedColor.getBlue() * ((double)(255 - color.getAlpha()) / 255) + color.getBlue() * ((double)(color.getAlpha()) / 255));
-                    System.out.println(red);
-                    System.out.println(green);
-                    System.out.println(blue);
 
                     blendedColor = new Color(red, green, blue);
                 }
@@ -126,28 +119,28 @@ public class ZBuffer extends JPanel {
     }
     public void tick() {
         if (Keys.isKeyPressed(KeyEvent.VK_W) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED, new Dimention(0, 1, 0, 0));
+            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(0, 1, 0, 0));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_S) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED, new Dimention(0, -1, 0, 0));
+            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(0, -1, 0, 0));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_A) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED, new Dimention(-1, 0, 0, 0));
+            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(-1, 0, 0, 0));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_D) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED, new Dimention(1, 0, 0, 0));
+            shapes.get(0).move(ControlValues.getHorizontalSpeed(), new Dimention(1, 0, 0, 0));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_I) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED / 2, new Dimention(0, 0, 1, 0));
+            shapes.get(0).move(ControlValues.getForwardsSpeed(), new Dimention(0, 0, 1, 0));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_K) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED / 2, new Dimention(0, 0, -1, 0));
+            shapes.get(0).move(ControlValues.getForwardsSpeed(), new Dimention(0, 0, -1, 0));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_J) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED / 2, new Dimention(0, 0, 0, -1));
+            shapes.get(0).move(ControlValues.getAnaSpeed(), new Dimention(0, 0, 0, -1));
         }
         if (Keys.isKeyPressed(KeyEvent.VK_L) && shapes.size() > 0) {
-            shapes.get(0).move(SPEED / 2, new Dimention(0, 0, 0, 1));
+            shapes.get(0).move(ControlValues.getAnaSpeed(), new Dimention(0, 0, 0, 1));
         }
 
         repaint();
@@ -155,5 +148,31 @@ public class ZBuffer extends JPanel {
     public Dimention modifyCoordinates(Dimention dimention) {
         Dimention result = eye.modifyCoordinates(dimention);
         return new Dimention(result.x() + (double) getWidth() / 2, result.y() * -1 + (double) getHeight() / 2, result.z(), result.w());
+    }
+    public Color getColor(double w) {
+        double absW = Math.abs(w);
+        boolean pos = w >= 0;
+
+        int blurValue = 0;
+        if (absW <= ControlValues.getBlurRange() / 2) {
+            blurValue = (int) ((1 - absW / (ControlValues.getBlurRange() / 2)) * 255);
+        }
+
+        if (absW <= ControlValues.getSolidRange() / 2) {
+            return new Color(0, 0, 0, blurValue);
+        } else if (absW <= ControlValues.getSolidRange() / 2 + ControlValues.getGradientRange()) {
+            int value = (int) ((absW - ControlValues.getSolidRange() / 2) / ControlValues.getGradientRange() * 255);
+            if (pos) {
+                return new Color(value, 0, 0, blurValue);
+            } else {
+                return new Color(0, 0, value, blurValue);
+            }
+        } else {
+            if (pos) {
+                return new Color(255, 0, 0, blurValue);
+            } else {
+                return new Color(0, 0, 255, blurValue);
+            }
+        }
     }
 }

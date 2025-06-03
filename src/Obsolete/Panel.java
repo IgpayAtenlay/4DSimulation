@@ -1,7 +1,8 @@
-package Visuals;
+package Obsolete;
 
 import Data.Dimention;
-import Shapes.Shape;
+import Visuals.Eye;
+import Visuals.Keys;
 
 import javax.swing.*;
 import java.awt.*;

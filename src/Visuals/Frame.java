@@ -11,7 +11,7 @@ public class Frame extends JFrame {
         super("Four Dimentions");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 600);
-        panel = new ZBuffer(getWidth(), getHeight());
+        panel = new ZBuffer();
         add(panel);
         setFocusable(true);
         addKeyListener(new KeyAdapter() {

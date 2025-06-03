@@ -26,10 +26,6 @@ public class LinkedListColor implements Iterable<Color> {
     public LinkedListColor() {
         size = 0;
     }
-    public LinkedListColor(double z, Color color) {
-        super();
-        add(z, color);
-    }
     public void add(double z, Color color) {
         if (isEmpty()) {
             head = new Node(z, color, null, null);

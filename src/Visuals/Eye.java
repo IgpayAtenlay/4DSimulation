@@ -6,16 +6,10 @@ public class Eye {
     private Dimention location;
     private Dimention direction;
     private Dimention displayRelativePosition;
-    private double solidRange;
-    private double blurRange;
-    private double gradientRange;
     public Eye() {
         location = new Dimention(0, 0, 0, 0);
         direction = new Dimention(0, 0, 0, 0);
         displayRelativePosition = new Dimention(0, 0, 10, 0);
-        solidRange = 10;
-        blurRange = 100;
-        gradientRange = 5;
     }
 
     public Dimention modifyCoordinates(Dimention dimention) {
@@ -53,14 +47,5 @@ public class Eye {
                 z,
                 w
         );
-    }
-    public double getSolidRange() {
-        return solidRange;
-    }
-    public double getBlurRange() {
-        return blurRange;
-    }
-    public double getGradientRange() {
-        return gradientRange;
     }
 }

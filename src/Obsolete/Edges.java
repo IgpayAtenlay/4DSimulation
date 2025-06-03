@@ -1,4 +1,6 @@
-package Data;
+package Obsolete;
+
+import Data.Dimention;
 
 import java.util.ArrayList;
 import java.util.HashMap;
