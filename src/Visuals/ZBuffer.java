@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 
 public class ZBuffer extends JPanel {
     private static int CROSSHAIR_LENGTH = 12;
-    private LinkedListColor[][] zBuffer;
+    private Dimention[][] zBuffer;
     private BufferedImage image;
 
     public ZBuffer() {
@@ -23,15 +23,39 @@ public class ZBuffer extends JPanel {
     }
 
     private void clearZBuffer() {
-        zBuffer = new LinkedListColor[Math.max(1, getWidth())][Math.max(1, getHeight())];
-        for (int x = 0; x < zBuffer.length; x++) {
-            for (int y = 0; y < zBuffer[x].length; y++) {
-                zBuffer[x][y] = new LinkedListColor();
+        zBuffer = new Dimention[Math.max(1, getWidth())][Math.max(1, getHeight())];
+    }
+    private void updateZBuffer() {
+        clearZBuffer();
+        for (Mesh shape : Control.getScene().getShapes()) {
+            for (Triangle triangle : shape.mesh) {
+                rasterizeTriangle(triangle);
             }
         }
     }
     private void clearImage() {
         this.image = new BufferedImage(zBuffer.length, zBuffer[0].length, BufferedImage.TYPE_INT_RGB);
+    }
+    private void updateImage() {
+        updateZBuffer();
+        clearImage();
+        for (int x = 0; x < zBuffer.length; x++) {
+            for (int y = 0; y < zBuffer[x].length; y++) {
+                if (zBuffer[x][y] != null) {
+                    Color color = getColor(zBuffer[x][y]);
+                    image.setRGB(
+                            x, y,
+                            ColorValues.blendColors(
+                                    Settings.getBackground(),
+                                    color,
+                                    color.getAlpha()
+                            ).getRGB()
+                    );
+                } else {
+                    image.setRGB(x, y, Settings.getBackground().getRGB());
+                }
+            }
+        }
     }
 
     private void rasterizeTriangle(Triangle triangle) {
@@ -57,7 +81,10 @@ public class ZBuffer extends JPanel {
                     double z = u * cornerOne.z() + v * cornerTwo.z() + baryW * cornerThree.z();
                     if (z > 0) {
                         double w = u * cornerOne.w() + v * cornerTwo.w() + baryW * cornerThree.w();
-                        zBuffer[x][y].add(z, w, getColor(new Dimention(x, y, z, w)));
+                        Dimention newDimention = new Dimention(x, y, z, w);
+                        if (zBuffer[x][y] == null || zBuffer[x][y].distance() > newDimention.distance()) {
+                            zBuffer[x][y] = newDimention;
+                        }
                     }
                 }
             }
@@ -79,29 +106,7 @@ public class ZBuffer extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // create image
-        clearZBuffer();
-        for (Mesh shape : Control.getScene().getShapes()) {
-            for (Triangle triangle : shape.mesh) {
-                rasterizeTriangle(triangle);
-            }
-        }
-
-        // paint image
-        clearImage();
-        for (int x = 0; x < zBuffer.length; x++) {
-            for (int y = 0; y < zBuffer[x].length; y++) {
-                Color blendedColor = Settings.getBackground();
-                for (Color color : zBuffer[x][y]) {
-                    int red = (int) (blendedColor.getRed() * ((double)(255 - color.getAlpha()) / 255) + color.getRed() * ((double)(color.getAlpha()) / 255));
-                    int green = (int) (blendedColor.getGreen() * ((double)(255 - color.getAlpha()) / 255) + color.getGreen() * ((double)(color.getAlpha()) / 255));
-                    int blue = (int) (blendedColor.getBlue() * ((double)(255 - color.getAlpha()) / 255) + color.getBlue() * ((double)(color.getAlpha()) / 255));
-
-                    blendedColor = new Color(red, green, blue);
-                }
-                image.setRGB(x, y, blendedColor.getRGB());
-            }
-        }
+        updateImage();
         g.drawImage(image, 0, 0, null);
 
         // add crosshairs
@@ -116,7 +121,7 @@ public class ZBuffer extends JPanel {
         Dimention result = Control.getScene().getEye().modifyCoordinates(dimention);
         return new Dimention(result.x() + (double) getWidth() / 2, result.y() * -1 + (double) getHeight() / 2, result.z(), result.w());
     }
-    public Color getColor(Dimention dimention) {
+    private Color getColor(Dimention dimention) {
         double absW = Math.abs(dimention.w());
         double absZ = Math.abs(dimention.z());
         boolean pos = dimention.w() >= 0;
@@ -154,5 +159,6 @@ public class ZBuffer extends JPanel {
         }
 
         return ColorValues.blendColors(Settings.getBackground(), baseColor, zBlur, wBlur);
+//            return Color.BLUE;
     }
 }

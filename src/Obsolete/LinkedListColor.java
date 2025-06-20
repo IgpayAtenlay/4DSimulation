@@ -1,4 +1,4 @@
-package Visuals;
+package Obsolete;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -21,7 +21,7 @@ public class LinkedListColor implements Iterable<Color> {
         }
 
         public boolean hasPrio(double z, double w) {
-//            if (Math.abs(this.w) < Math.abs(w)) {
+//            if (Math.abs(this.z) < Math.abs(z)) {
 //                return true;
 //            } else if (Math.abs(this.w) > Math.abs(w)) {
 //                return false;
@@ -29,6 +29,9 @@ public class LinkedListColor implements Iterable<Color> {
 //                return Math.abs(this.z) <= Math.abs(z);
 //            }
             return Math.sqrt(this.z * this.z + this.w * this.w) <= Math.sqrt(z * z + w * w);
+        }
+        public boolean sameDirection(double z, double w) {
+            return this.z / this.w == z / w;
         }
     }
     // smallest
@@ -43,39 +46,20 @@ public class LinkedListColor implements Iterable<Color> {
         if (isEmpty()) {
             head = new Node(z, w, color, null, null);
             tail = head;
-            size++;
-        } else if (head.hasPrio(z, w)) {
-            if (color.getAlpha() == 255) {
-                head = new Node(z, w, color, null, null);
-                tail = head;
-                size = 1;
-            } else {
-                head = new Node(z, w, color, head, null);
-                head.next.previous = head;
-                size++;
-            }
+            size = 1;
         } else {
-            int numCurrentNode = 1;
             Node currentNode = head;
-            while (currentNode.next != null) {
-                if (currentNode.next.hasPrio(z, w)) {
-                    if (color.getAlpha() == 255) {
-                        currentNode.next = new Node(z, w, color, null, currentNode);
-                        tail = currentNode.next;
-                        size = numCurrentNode + 1;
-                    } else {
-                        currentNode.next = new Node(z, w, color, currentNode.next, currentNode);
-                        currentNode.next.next.previous = currentNode.next;
-                        size++;
-                    }
-                    return;
+            boolean notSameDirection = true;
+            while (currentNode != null) {
+                if (currentNode.sameDirection(z, w)) {
+                    notSameDirection = false;
+                    break;
                 }
                 currentNode = currentNode.next;
-                numCurrentNode++;
             }
-            if (currentNode.color.getAlpha() != 255) {
-                currentNode.next = new Node(z, w, color, null, currentNode);
-                tail = currentNode.next;
+            if (notSameDirection) {
+                tail.next = new Node(z, w, color, tail, null);
+                tail = tail.next;
                 size++;
             }
         }

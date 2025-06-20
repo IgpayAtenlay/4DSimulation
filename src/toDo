@@ -1,2 +1,4 @@
 fix bug with half of triangle behind you and half in front of you
-add tesseract
+use Euler Angles to enable rotation in the fourth dimention
+    https://www.research.kobe-u.ac.jp/csi-viz/members/kageyama/docs/150629_euler_angles_in4d.pdf
+    https://en.wikipedia.org/wiki/Rotation_matrix
