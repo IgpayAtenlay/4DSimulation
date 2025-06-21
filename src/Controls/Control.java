@@ -51,6 +51,19 @@ public class Control {
             if (Keys.isKeyPressed(KeyEvent.VK_L)) {
                 focus.move(Settings.getAnaSpeed(), new Dimention(0, 0, 0, 1));
             }
+            if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD4)) {
+                // turn left
+                focus.turn(Settings.getxTurn(), new Dimention(-1, 0, 0, 0));
+            }
+            if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD6)) {
+                focus.turn(Settings.getxTurn(), new Dimention(1, 0, 0, 0));
+            }
+            if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD8)) {
+                focus.turn(Settings.getyTurn(), new Dimention(0, 1, 0, 0));
+            }
+            if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD2)) {
+                focus.turn(Settings.getyTurn(), new Dimention(0, -1, 0, 0));
+            }
         }
     }
 

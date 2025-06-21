@@ -9,6 +9,10 @@ public class Settings {
     private static int horizontalSpeed = 50;
     private static int forwardsSpeed = 50;
     private static int anaSpeed = 50;
+    private static double xTurn = 0.02;
+    private static double yTurn = 0.02;
+    private static double zTurn = 0.05;
+    private static double wTurn = 0.01;
     private static Color background = Color.WHITE;
 
     public static double getSolidRange() {
@@ -20,6 +24,7 @@ public class Settings {
     public static double getGradientRange() {
         return gradientRange;
     }
+
     public static int getHorizontalSpeed() {
         return horizontalSpeed;
     }
@@ -29,6 +34,20 @@ public class Settings {
     public static int getAnaSpeed() {
         return anaSpeed;
     }
+
+    public static double getxTurn() {
+        return xTurn;
+    }
+    public static double getyTurn() {
+        return yTurn;
+    }
+    public static double getzTurn() {
+        return zTurn;
+    }
+    public static double getwTurn() {
+        return wTurn;
+    }
+
     public static Color getBackground() {
         return background;
     }

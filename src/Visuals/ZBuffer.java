@@ -92,12 +92,12 @@ public class ZBuffer extends JPanel {
     }
     // Compute barycentric coordinates
     private double[] baryCoords(int pointX, int pointY, Dimention one, Dimention two, Dimention three) {
-        double determinant = ((two.y() - three.y())*(one.x() - three.x()) + (three.x() - two.x())*(one.y() - three.y()));
+        double determinant = ((two.y() - three.y()) * (one.x() - three.x()) + (three.x() - two.x()) * (one.y() - three.y()));
         if (determinant == 0) {
             return new double[]{-1, -1, -1};
         }
-        double u = ((two.y() - three.y())*(pointX - three.x()) + (three.x() - two.x())*(pointY - three.y())) / determinant;
-        double v = ((three.y() - one.y())*(pointX - three.x()) + (one.x() - three.x())*(pointY - three.y())) / determinant;
+        double u = ((two.y() - three.y()) * (pointX - three.x()) + (three.x() - two.x()) * (pointY - three.y())) / determinant;
+        double v = ((three.y() - one.y()) * (pointX - three.x()) + (one.x() - three.x()) * (pointY - three.y())) / determinant;
         double w = 1 - u - v;
         return new double[]{u, v, w};
     }

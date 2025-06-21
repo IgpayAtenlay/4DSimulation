@@ -7,7 +7,7 @@ public record Dimention(double x, double y, double z, double w) {
     public double distance(Dimention dimention) {
         return new Dimention(this.x - dimention.x, this.y - dimention.y, this.z - dimention.z, this.w - dimention.w).distance();
     }
-    public Dimention move(int distance, Dimention direction) {
+    public Dimention move(double distance, Dimention direction) {
         return new Dimention(
                 x + direction.x() * distance / direction.distance(),
                 y + direction.y() * distance / direction.distance(),

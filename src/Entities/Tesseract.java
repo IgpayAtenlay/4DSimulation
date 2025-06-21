@@ -3,6 +3,7 @@ package Entities;
 import Data.Dimention;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Tesseract extends Mesh {
     public Tesseract(Dimention start, int sideLength) {
@@ -55,7 +56,10 @@ public class Tesseract extends Mesh {
         }
 
         for (Square square : squares) {
-            addRectangle(square.dimentions[1], square.dimentions[0], square.dimentions[2]);
+//            if (square.dimentions[0].w() == 0 && square.dimentions[1].w() == 500) {
+                addRectangle(square.dimentions[1], square.dimentions[0], square.dimentions[2]);
+//                System.out.println(square);
+//            }
         }
     }
 
@@ -87,6 +91,9 @@ public class Tesseract extends Mesh {
                 }
             }
             return matching == 4;
+        }
+        public String toString() {
+            return Arrays.toString(dimentions);
         }
     }
     private Square createWithTesting(Dimention... dimentions) {

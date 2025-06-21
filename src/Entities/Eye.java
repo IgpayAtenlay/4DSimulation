@@ -20,21 +20,21 @@ public class Eye extends Entity {
 
         // rotate
         Dimention rotated = new Dimention(
-                Math.cos(direction.y()) * (
+                Math.cos(direction.x()) * (
                                         Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
-                                ) - Math.sin(direction.y()) * z,
-                Math.sin(direction.x()) * (
-                                    Math.cos(direction.y()) * z + Math.sin(direction.y()) * (
+                                ) - Math.sin(direction.x()) * z,
+                Math.sin(direction.y() * -1) * (
+                                    Math.cos(direction.x()) * z + Math.sin(direction.x()) * (
                                         Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
                                     )
-                                ) + Math.cos(direction.x()) * (
+                                ) + Math.cos(direction.y() * -1) * (
                                     Math.cos(direction.z()) * y - Math.sin(direction.z()) * x
                                 ),
-                Math.cos(direction.x()) * (
-                                        Math.cos(direction.y()) * z + Math.sin(direction.y()) * (
+                Math.cos(direction.y() * -1) * (
+                                        Math.cos(direction.x()) * z + Math.sin(direction.x()) * (
                                                 Math.sin(direction.z()) * y + Math.cos(direction.z()) * x
                                         )
-                                ) - Math.sin(direction.x()) * (
+                                ) - Math.sin(direction.y() * -1) * (
                                         Math.cos(direction.z()) * y - Math.sin(direction.z()) * x
                                 ),
                 w
@@ -49,5 +49,8 @@ public class Eye extends Entity {
     }
     public void move(int distance, Dimention direction) {
         location = location.move(distance, direction);
+    }
+    public void turn(double degree, Dimention direction) {
+        this.direction = this.direction.move(degree, direction);
     }
 }
