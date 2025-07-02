@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Settings {
     private static double solidRange = 200;
-    private static double blurRange = 6000;
+    private static double blurRange = 100000;
     private static double gradientRange = 200;
     private static int horizontalSpeed = 50;
     private static int forwardsSpeed = 50;

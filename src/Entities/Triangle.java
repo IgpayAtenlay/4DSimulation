@@ -2,7 +2,7 @@ package Entities;
 
 import Data.Dimention;
 
-public class Triangle {
+public class Triangle extends Entity {
     public Dimention cornerOne;
     public Dimention cornerTwo;
     public Dimention cornerThree;
@@ -17,5 +17,8 @@ public class Triangle {
         cornerOne = cornerOne.move(distance, direction);
         cornerTwo = cornerTwo.move(distance, direction);
         cornerThree = cornerThree.move(distance, direction);
+    }
+    @Override
+    public void turn(double degree, Dimention direction) {
     }
 }

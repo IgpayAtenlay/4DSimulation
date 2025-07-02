@@ -2,19 +2,19 @@ package Controls;
 
 import Data.Dimention;
 import Entities.Entity;
-import Entities.Mesh;
-import Scenes.Scene;
+import Entities.Mesh4D;
+import Scenes.Scene4D;
 import Visuals.Frame;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 public class Control {
-    private static Scene scene;
+    private static Scene4D scene;
     private static Entity focus;
     private static Frame frame;
 
-    public static void initialize(Scene scene) {
+    public static void initialize(Scene4D scene) {
         Control.scene = scene;
         focus = scene.getEye();
         frame = new Frame();
@@ -28,10 +28,10 @@ public class Control {
     public static void tick() {
         if ( focus != null) {
             if (Keys.isKeyPressed(KeyEvent.VK_W)) {
-                focus.move(Settings.getHorizontalSpeed(), new Dimention(0, 1, 0, 0));
+                focus.move(Settings.getHorizontalSpeed(), new Dimention(0, 0, 1, 0));
             }
             if (Keys.isKeyPressed(KeyEvent.VK_S)) {
-                focus.move(Settings.getHorizontalSpeed(), new Dimention(0, -1, 0, 0));
+                focus.move(Settings.getHorizontalSpeed(), new Dimention(0, 0, -1, 0));
             }
             if (Keys.isKeyPressed(KeyEvent.VK_A)) {
                 focus.move(Settings.getHorizontalSpeed(), new Dimention(-1, 0, 0, 0));
@@ -40,10 +40,10 @@ public class Control {
                 focus.move(Settings.getHorizontalSpeed(), new Dimention(1, 0, 0, 0));
             }
             if (Keys.isKeyPressed(KeyEvent.VK_I)) {
-                focus.move(Settings.getForwardsSpeed(), new Dimention(0, 0, 1, 0));
+                focus.move(Settings.getForwardsSpeed(), new Dimention(0, 1, 0, 0));
             }
             if (Keys.isKeyPressed(KeyEvent.VK_K)) {
-                focus.move(Settings.getForwardsSpeed(), new Dimention(0, 0, -1, 0));
+                focus.move(Settings.getForwardsSpeed(), new Dimention(0, -1, 0, 0));
             }
             if (Keys.isKeyPressed(KeyEvent.VK_J)) {
                 focus.move(Settings.getAnaSpeed(), new Dimention(0, 0, 0, -1));
@@ -67,10 +67,10 @@ public class Control {
         }
     }
 
-    public static Scene getScene() {
+    public static Scene4D getScene() {
         return scene;
     }
-    public void add(Mesh shape) {
+    public void add(Mesh4D shape) {
         scene.getShapes().add(shape);
     }
 }

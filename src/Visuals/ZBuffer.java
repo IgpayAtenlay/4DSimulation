@@ -3,13 +3,14 @@ package Visuals;
 import Controls.Control;
 import Controls.Settings;
 import Data.Dimention;
-import Entities.Mesh;
-import Entities.Triangle;
+import Entities.Mesh4D;
+import Entities.TriangularPyramid;
 import Util.ColorValues;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class ZBuffer extends JPanel {
     private static int CROSSHAIR_LENGTH = 12;
@@ -27,9 +28,9 @@ public class ZBuffer extends JPanel {
     }
     private void updateZBuffer() {
         clearZBuffer();
-        for (Mesh shape : Control.getScene().getShapes()) {
-            for (Triangle triangle : shape.mesh) {
-                rasterizeTriangle(triangle);
+        for (Mesh4D shape : Control.getScene().getShapes()) {
+            for (TriangularPyramid triangularPyramid : shape.mesh) {
+                rasterizeTriangularPyramid(triangularPyramid);
             }
         }
     }
@@ -58,37 +59,62 @@ public class ZBuffer extends JPanel {
         }
     }
 
-    private void rasterizeTriangle(Triangle triangle) {
-        Dimention cornerOne = modifyCoordinates(triangle.cornerOne);
-        Dimention cornerTwo = modifyCoordinates(triangle.cornerTwo);
-        Dimention cornerThree = modifyCoordinates(triangle.cornerThree);
+    private void rasterizeTriangularPyramid(TriangularPyramid triangularPyramid) {
+        Dimention[] corners = new Dimention[] {
+                modifyCoordinates(triangularPyramid.cornerOne),
+                modifyCoordinates(triangularPyramid.cornerTwo),
+                modifyCoordinates(triangularPyramid.cornerThree),
+                modifyCoordinates(triangularPyramid.cornerFour)
+        };
 
         // Bounding box
-        int minX = (int) Math.max(0, Math.min(cornerOne.x(), Math.min(cornerTwo.x(), cornerThree.x())));
-        int maxX = (int) Math.min(zBuffer.length - 1, Math.max(cornerOne.x(), Math.max(cornerTwo.x(), cornerThree.x())));
-        int minY = (int) Math.max(0, Math.min(cornerOne.y(), Math.min(cornerTwo.y(), cornerThree.y())));
-        int maxY = (int) Math.min(zBuffer[0].length - 1, Math.max(cornerOne.y(), Math.max(cornerTwo.y(), cornerThree.y())));
+        int minX = (int) Math.max(0, Math.min(corners[0].x(), Math.min(corners[1].x(), Math.min(corners[2].x(), corners[3].x()))));
+        int maxX = (int) Math.min(zBuffer.length - 1, Math.max(corners[0].x(), Math.max(corners[1].x(), Math.max(corners[2].x(), corners[3].x()))));
+        int minY = (int) Math.max(0, Math.min(corners[0].y(), Math.min(corners[1].y(), Math.min(corners[2].y(), corners[3].y()))));
+        int maxY = (int) Math.min(zBuffer[0].length - 1, Math.max(corners[0].y(), Math.max(corners[1].y(), Math.max(corners[2].y(), corners[3].y()))));
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
-                double[] bary = baryCoords(x, y, cornerOne, cornerTwo, cornerThree);
-                double u = bary[0];
-                double v = bary[1];
-                double baryW = bary[2];
-
-                // inside triangle
-                if (u >= 0 && v >= 0 && baryW >= 0) {
-                    double z = u * cornerOne.z() + v * cornerTwo.z() + baryW * cornerThree.z();
-                    if (z > 0) {
-                        double w = u * cornerOne.w() + v * cornerTwo.w() + baryW * cornerThree.w();
-                        Dimention newDimention = new Dimention(x, y, z, w);
-                        if (zBuffer[x][y] == null || zBuffer[x][y].distance() > newDimention.distance()) {
-                            zBuffer[x][y] = newDimention;
+                ArrayList<Dimention> intersections = new ArrayList<>();
+                for (int cornerOne = 0; cornerOne < 2; cornerOne++) {
+                    for (int cornerTwo = cornerOne + 1; cornerTwo < 3; cornerTwo++) {
+                        for (int cornerThree = cornerTwo + 1; cornerThree < 4; cornerThree++) {
+                            Dimention intersection = rasterizeTriangle(corners[cornerOne], corners[cornerTwo], corners[cornerThree], x, y);
+                            if (intersection != null) {
+                                intersections.add(intersection);
+                            }
                         }
+                    }
+                }
+                if (!intersections.isEmpty()) {
+                    Dimention closest = intersections.get(0);
+                    for (Dimention current : intersections) {
+                        if (current.distance() < closest.distance()) {
+                            closest = current;
+                        }
+                    }
+                    if (zBuffer[x][y] == null || zBuffer[x][y].distance() > closest.distance()) {
+                        zBuffer[x][y] = closest;
                     }
                 }
             }
         }
+    }
+    private Dimention rasterizeTriangle(Dimention cornerOne, Dimention cornerTwo, Dimention cornerThree, int x, int y) {
+        double[] bary = baryCoords(x, y, cornerOne, cornerTwo, cornerThree);
+        double u = bary[0];
+        double v = bary[1];
+        double baryW = bary[2];
+
+        // inside triangle
+        if (u >= 0 && v >= 0 && baryW >= 0) {
+            double z = u * cornerOne.z() + v * cornerTwo.z() + baryW * cornerThree.z();
+            if (z > 0) {
+                double w = u * cornerOne.w() + v * cornerTwo.w() + baryW * cornerThree.w();
+                return new Dimention(x, y, z, w);
+            }
+        }
+        return null;
     }
     // Compute barycentric coordinates
     private double[] baryCoords(int pointX, int pointY, Dimention one, Dimention two, Dimention three) {
