@@ -126,10 +126,6 @@ public class ZBuffer extends JPanel {
             return intersections.get(0);
         } else if (intersections.size() == 2) {
             Vector vector = Distance.closestPoint(new Vector(intersections.get(0).z(), intersections.get(0).w()), new Vector(intersections.get(1).z(), intersections.get(1).w()));
-            if (intersections.get(0).z() < intersections.get(1).z() - 1 && intersections.get(0).w() - 1 > intersections.get(1).w()) {
-                System.out.println(intersections);
-                System.out.println(vector);
-            }
             return new Dimention(intersections.get(0).x(), intersections.get(0).y(), vector.x(), vector.y());
         } else {
             Dimention closest = intersections.get(0);
