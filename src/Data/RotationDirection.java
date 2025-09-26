@@ -1,6 +1,6 @@
 package Data;
 
-public enum RotationDirections {
+public enum RotationDirection {
     XZ,
     YZ,
     WZ

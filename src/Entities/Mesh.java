@@ -1,7 +1,7 @@
 package Entities;
 
 import Data.Dimention;
-import Data.RotationDirections;
+import Data.RotationDirection;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ public abstract class Mesh extends Entity {
     public void move(int distance, Dimention direction) {
         mesh.forEach(e -> e.move(distance, direction));
     }
-    public void turn(double degree, RotationDirections direction) {
+    public void turn(double degree, RotationDirection direction) {
         // not implimented
     }
     public void addRectangularPrism(Dimention middle, Dimention one, Dimention two, Dimention three) {
