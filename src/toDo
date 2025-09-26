@@ -1,4 +1,4 @@
-rotation doesn't work because it is focused around yz instead of around the forward direction
+find (or create) name for 4d rotation
 use Euler Angles to enable rotation in the fourth dimention
     https://www.research.kobe-u.ac.jp/csi-viz/members/kageyama/docs/150629_euler_angles_in4d.pdf
     https://en.wikipedia.org/wiki/Rotation_matrix

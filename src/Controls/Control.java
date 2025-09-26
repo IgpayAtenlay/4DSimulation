@@ -55,22 +55,22 @@ public class Control {
                 ((Eye) focus).move(Settings.getAnaSpeed(), FacingDirection.ANA_KATA);
             }
             if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD4)) {
-                focus.turn(Settings.getXZTurn(), RotationDirection.XZ);
+                focus.turn(Settings.getXZTurn(), RotationDirection.YAW);
             }
             if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD6)) {
-                focus.turn(Settings.getXZTurn() * -1, RotationDirection.XZ);
+                focus.turn(Settings.getXZTurn() * -1, RotationDirection.YAW);
             }
             if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD8)) {
-                focus.turn(Settings.getYZTurn(), RotationDirection.YZ);
+                focus.turn(Settings.getYZTurn(), RotationDirection.PITCH);
             }
             if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD2)) {
-                focus.turn(Settings.getYZTurn() * -1, RotationDirection.YZ);
+                focus.turn(Settings.getYZTurn() * -1, RotationDirection.PITCH);
             }
             if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD7)) {
-                focus.turn(Settings.getWZTurn(), RotationDirection.WZ);
+                focus.turn(Settings.getWZTurn(), RotationDirection.FOUR_D_ROTATE);
             }
             if (Keys.isKeyPressed(KeyEvent.VK_NUMPAD9)) {
-                focus.turn(Settings.getWZTurn() * -1, RotationDirection.WZ);
+                focus.turn(Settings.getWZTurn() * -1, RotationDirection.FOUR_D_ROTATE);
             }
         }
     }

@@ -1,7 +1,7 @@
 package Data;
 
 public enum RotationDirection {
-    XZ,
-    YZ,
-    WZ
+    YAW,
+    PITCH,
+    FOUR_D_ROTATE
 }

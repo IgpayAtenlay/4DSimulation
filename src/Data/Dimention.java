@@ -1,5 +1,7 @@
 package Data;
 
+import org.ejml.simple.SimpleMatrix;
+
 public record Dimention(double x, double y, double z, double w) {
     public double distance() {
         return Math.sqrt(distanceSquared());
@@ -46,7 +48,20 @@ public record Dimention(double x, double y, double z, double w) {
         return z > 0;
     }
 
-    // matrix equations
+    // matrix
+    public SimpleMatrix getMatrix() {
+        return new SimpleMatrix(
+                new double[][] {
+                        new double[] {x},
+                        new double[] {y},
+                        new double[] {z},
+                        new double[] {w}
+                }
+        );
+    }
+    public static Dimention fromMatrix(SimpleMatrix matrix) {
+        return new Dimention(matrix.get(0, 0), matrix.get(1, 0), matrix.get(2, 0), matrix.get(3, 0));
+    }
     public Dimention add(Dimention dimention) {
         return new Dimention(this.x + dimention.x, this.y + dimention.y, this.z + dimention.z, this.w + dimention.w);
     }
